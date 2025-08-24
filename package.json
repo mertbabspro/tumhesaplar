@@ -1,0 +1,14 @@
+{
+  "name": "minecraft-bot",
+  "version": "1.0.0",
+  "description": "Zurnacraft.net için Mineflayer bot scripti",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "SeninAdın",
+  "license": "MIT",
+  "dependencies": {
+    "mineflayer": "^4.0.0"
+  }
+}
