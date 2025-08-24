@@ -26,18 +26,15 @@ function createBot(username) {
   bot.on('login', () => {
     console.log(`${username} sunucuya giriş yaptı!`);
 
-    // Sunucuya girişten 10 saniye sonra /login komutu gönder
     setTimeout(() => {
       bot.chat('/login benbitben');
       console.log(`${username} login yaptı`);
 
-      // Login komutundan 10 saniye sonra /warp afk gönder
       setTimeout(() => {
         bot.chat('/warp afk');
         console.log(`${username} warp afk yaptı`);
       }, 10000);
 
-      // Her 5 saniyede /shard pay obbyzz 1 gönder
       setInterval(() => {
         bot.chat('/shard pay obbyzz 1');
       }, 5000);
@@ -45,11 +42,19 @@ function createBot(username) {
     }, 10000);
   });
 
+  // Sunucudan gelen tüm chat mesajlarını logla
+  bot.on('chat', (username, message) => {
+    console.log(`[CHAT] ${username}: ${message}`);
+  });
+
+  bot.on('whisper', (username, message) => {
+    console.log(`[WHISPER] ${username}: ${message}`);
+  });
+
   bot.on('error', err => console.log(`${username} hatası: ${err}`));
   bot.on('end', () => console.log(`${username} sunucudan çıktı`));
 }
 
-// 8 hesabı aynı anda başlat
 accounts.forEach(account => createBot(account));
 
 // Her 20 saniyede bir rastgele bot mesaj atacak
@@ -57,5 +62,5 @@ setInterval(() => {
   if (bots.length === 0) return;
   const randomBot = bots[Math.floor(Math.random() * bots.length)];
   randomBot.chat('Elytra,V5 Servet 3 Kırılmazlık kazma satılır');
-  console.log(`${randomBot.username} mesaj attı`);
+  console.log(`[BOT MESAJI] ${randomBot.username}: Elytra,V5 Servet 3 Kırılmazlık kazma satılır`);
 }, 20000);
