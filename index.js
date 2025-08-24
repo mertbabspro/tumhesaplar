@@ -79,15 +79,3 @@ function createBot(username) {
 accounts.forEach((account, index) => {
   setTimeout(() => createBot(account), index * 5000);
 });
-
-// Her 20 saniyede bir rastgele bot mesaj atacak
-setInterval(() => {
-  if (bots.length === 0) return;
-  const randomBot = bots[Math.floor(Math.random() * bots.length)];
-  try {
-    randomBot.chat('Elytra,V5 Servet 3 Kırılmazlık kazma satılır');
-    console.log(`[BOT MESAJI] ${randomBot.username}: Elytra,V5 Servet 3 Kırılmazlık kazma satılır`);
-  } catch (err) {
-    console.log(`${randomBot.username} mesaj gönderilemedi:`, err);
-  }
-}, 20000);
