@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "SeninAdın",
+  "author": "obbyzz",
   "license": "MIT",
   "dependencies": {
     "mineflayer": "^4.0.0"
