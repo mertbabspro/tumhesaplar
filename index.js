@@ -13,6 +13,7 @@ const accounts = [
 
 const bots = [];
 
+// Bot oluşturma fonksiyonu
 function createBot(username) {
   const bot = mineflayer.createBot({
     host: 'zurnacraft.net',
@@ -26,23 +27,38 @@ function createBot(username) {
   bot.on('login', () => {
     console.log(`${username} sunucuya giriş yaptı!`);
 
+    // Sunucuya girişten 10 saniye sonra /login komutu
     setTimeout(() => {
-      bot.chat('/login benbitben');
-      console.log(`${username} login yaptı`);
+      try {
+        bot.chat('/login benbitben');
+        console.log(`${username} login yaptı`);
+      } catch (err) {
+        console.log(`${username} login gönderilemedi:`, err);
+      }
 
+      // Login’den 10 saniye sonra /warp afk
       setTimeout(() => {
-        bot.chat('/warp afk');
-        console.log(`${username} warp afk yaptı`);
+        try {
+          bot.chat('/warp afk');
+          console.log(`${username} warp afk yaptı`);
+        } catch (err) {
+          console.log(`${username} warp afk gönderilemedi:`, err);
+        }
       }, 10000);
 
+      // Her 5 saniyede /shard pay obbyzz 1 gönder
       setInterval(() => {
-        bot.chat('/shard pay obbyzz 1');
+        try {
+          bot.chat('/shard pay obbyzz 1');
+        } catch (err) {
+          console.log(`${username} shard komutu gönderilemedi:`, err);
+        }
       }, 5000);
 
     }, 10000);
   });
 
-  // Sunucudan gelen tüm chat mesajlarını logla
+  // Sunucudan gelen chat mesajlarını logla
   bot.on('chat', (username, message) => {
     console.log(`[CHAT] ${username}: ${message}`);
   });
@@ -51,16 +67,27 @@ function createBot(username) {
     console.log(`[WHISPER] ${username}: ${message}`);
   });
 
-  bot.on('error', err => console.log(`${username} hatası: ${err}`));
-  bot.on('end', () => console.log(`${username} sunucudan çıktı`));
+  // Hataları ve sunucudan çıkışları yakala
+  bot.on('error', err => console.log(`${username} hatası:`, err));
+  bot.on('end', () => {
+    console.log(`${username} sunucudan çıktı, 10 saniye sonra yeniden bağlanacak...`);
+    setTimeout(() => createBot(username), 10000);
+  });
 }
 
-accounts.forEach(account => createBot(account));
+// Botları sırayla başlat (5 saniye arayla)
+accounts.forEach((account, index) => {
+  setTimeout(() => createBot(account), index * 5000);
+});
 
 // Her 20 saniyede bir rastgele bot mesaj atacak
 setInterval(() => {
   if (bots.length === 0) return;
   const randomBot = bots[Math.floor(Math.random() * bots.length)];
-  randomBot.chat('Elytra,V5 Servet 3 Kırılmazlık kazma satılır');
-  console.log(`[BOT MESAJI] ${randomBot.username}: Elytra,V5 Servet 3 Kırılmazlık kazma satılır`);
+  try {
+    randomBot.chat('Elytra,V5 Servet 3 Kırılmazlık kazma satılır');
+    console.log(`[BOT MESAJI] ${randomBot.username}: Elytra,V5 Servet 3 Kırılmazlık kazma satılır`);
+  } catch (err) {
+    console.log(`${randomBot.username} mesaj gönderilemedi:`, err);
+  }
 }, 20000);
