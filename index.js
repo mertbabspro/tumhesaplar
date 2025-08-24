@@ -13,6 +13,21 @@ const accounts = [
 
 const bots = [];
 
+// Güvenli chat fonksiyonu
+function safeChat(bot, message) {
+  try {
+    if (typeof bot.chat === 'function') {
+      bot.chat(message);
+    } else if (bot._client && typeof bot._client.write === 'function') {
+      bot._client.write('chat', { message });
+    } else {
+      console.log(`${bot.username} chat fonksiyonu bulunamadı.`);
+    }
+  } catch (err) {
+    console.log(`${bot.username} mesaj gönderilemedi:`, err);
+  }
+}
+
 // Bot oluşturma fonksiyonu
 function createBot(username) {
   const bot = mineflayer.createBot({
@@ -29,30 +44,18 @@ function createBot(username) {
 
     // Sunucuya girişten 10 saniye sonra /login komutu
     setTimeout(() => {
-      try {
-        bot.chat('/login benbitben');
-        console.log(`${username} login yaptı`);
-      } catch (err) {
-        console.log(`${username} login gönderilemedi:`, err);
-      }
+      safeChat(bot, '/login benbitben');
+      console.log(`${username} login yaptı`);
 
       // Login’den 10 saniye sonra /warp afk
       setTimeout(() => {
-        try {
-          bot.chat('/warp afk');
-          console.log(`${username} warp afk yaptı`);
-        } catch (err) {
-          console.log(`${username} warp afk gönderilemedi:`, err);
-        }
+        safeChat(bot, '/warp afk');
+        console.log(`${username} warp afk yaptı`);
       }, 10000);
 
       // Her 5 saniyede /shard pay obbyzz 1 gönder
       setInterval(() => {
-        try {
-          bot.chat('/shard pay obbyzz 1');
-        } catch (err) {
-          console.log(`${username} shard komutu gönderilemedi:`, err);
-        }
+        safeChat(bot, '/shard pay obbyzz 1');
       }, 5000);
 
     }, 10000);
